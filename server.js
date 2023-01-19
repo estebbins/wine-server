@@ -6,6 +6,7 @@ require('dotenv').config() // Load ENV file's variables
 // !import routers once created
 // e.g., const nameRouter = require('./controllers/nameControllers')
 // const wineRouter = require('./controllers/wineControllers')
+// !import subdocument router once created
 // !import middleware once created
 // const middleware = require('./utils/middleware')
 
@@ -13,6 +14,7 @@ require('dotenv').config() // Load ENV file's variables
 //// Create our Express App Object               ////
 /////////////////////////////////////////////////////
 const app = express()
+// ! update to liquid express views
 
 /////////////////////////////////////////////////////
 //// Middleware                                  ////
@@ -31,6 +33,9 @@ app.get('/', (req, res) => {
 // Register routes once created
 // !app.use('/wines', WineRouter)
 // !app.use('/users', UserRouter)
+// ! Add subdocument router
+
+// ! render catch-all error page
 
 /////////////////////////////////////////////////////
 //// Server Listener                             ////
