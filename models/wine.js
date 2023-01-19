@@ -11,15 +11,15 @@ const { Schema, model } = mongoose
 //// Define fruit schema & create fruit model    ////
 /////////////////////////////////////////////////////
 const wineSchema = new Schema ({
-    name: {
+    brand: {
         type: String
     }, 
-    type: {
-        type: String
-    }, 
-    vineyard: {
+    varietal: {
         type: String
     },
+    color: {
+        type: String
+    }, 
     dateTasted: {
         type: Date
     },

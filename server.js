@@ -3,12 +3,9 @@
 /////////////////////////////////////////////////////
 const express = require('express') // import the express framework
 require('dotenv').config() // Load ENV file's variables
-// !import routers once created
-// e.g., const nameRouter = require('./controllers/nameControllers')
-// const wineRouter = require('./controllers/wineControllers')
+const WineRouter = require('./controllers/wineControllers')
 // !import subdocument router once created
-// !import middleware once created
-// const middleware = require('./utils/middleware')
+const middleware = require('./utils/middleware')
 
 /////////////////////////////////////////////////////
 //// Create our Express App Object               ////
@@ -31,7 +28,7 @@ app.get('/', (req, res) => {
     res.send('Server is live, ready for requests')
 })
 // Register routes once created
-// !app.use('/wines', WineRouter)
+app.use('/wines', WineRouter)
 // !app.use('/users', UserRouter)
 // ! Add subdocument router
 
