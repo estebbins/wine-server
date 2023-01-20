@@ -56,6 +56,25 @@ router.get('/', (req, res) => {
         })
 })
 
+// Create route
+// CREATE -> receives a request body, and creates a new document in the database
+router.post('/', (req, res) => {
+    // !req.body.owner = req.session.userId
+    // store req.body to a variable
+    const newWine = req.body
+    Wine.create(newWine)
+        // send 201 & json of wine
+        .then(wine => {
+            res.status(201).json({ wine: wine.toObject() })
+        })
+        // send and error if one occurs
+        .catch(err => {
+            console.log(err)
+            res.status(404).json(err)
+        })
+    //! res.send(newFruit) //to essentially console log to postman
+})
+
 /////////////////////////////////////////////////////
 //// Export Router                               ////
 /////////////////////////////////////////////////////
