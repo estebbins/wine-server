@@ -76,6 +76,7 @@ router.post('/', (req, res) => {
     //! res.send(newFruit) //to essentially console log to postman
 })
 
+////////////////// Temporary UPDATE route ///////////////////////
 // Update route
 // PUT -> replaces the entire document with a new document from the req.body
 router.put('/:id', (req, res) => {
@@ -89,6 +90,24 @@ router.put('/:id', (req, res) => {
             // update success message will be a 204 - no content
             res.sendStatus(204)
         })
+        .catch(err => {
+            console.log(err)
+            res.status(404).json(err)
+        })
+})
+
+// Show route
+// GET -> finds and displays a single resource
+router.get('/:id', (req, res) => {
+    // get the id -> save to a variable
+    const id = req.params.id
+    // use a mongoose method to find using that Id
+    Wine.findById(id)
+        .then(wine => {
+            // send the wine as json upon success
+            res.json({ wine: wine })
+        })
+        // catch any errors
         .catch(err => {
             console.log(err)
             res.status(404).json(err)
