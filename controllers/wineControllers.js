@@ -96,6 +96,32 @@ router.put('/:id', (req, res) => {
         })
 })
 
+// Delete route
+// DELETE -> delete a specific wine
+router.delete('/:id', (req, res) => {
+    // get the id from the req
+    const id = req.params.id
+    // Find and delete wine
+    Wine.findById(id)
+        .then(wine => {
+            // if the owner of the fruit is the person who is logged in
+            // if (wine.owner == req.session.userId) {
+                // and send success message
+                res.sendStatus(204)
+                // delete the fruit
+                return wine.deleteOne()
+            // } else {
+                // otherwise send a 401 unauthorized status
+                // res.sendStatus(401)
+            // }
+        })
+        .catch(err => {
+            // otherwise, throw an error
+            console.log(err)
+            res.status(400).json(err)
+        })
+})
+
 // Show route
 // GET -> finds and displays a single resource
 router.get('/:id', (req, res) => {
