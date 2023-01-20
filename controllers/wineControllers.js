@@ -36,7 +36,8 @@ router.get('/seed', (req, res) => {
         })
 })
 
-// INDEX route -> displays all wines
+// Index route 
+// GET -> displays all wines
 router.get('/', (req, res) => {
     // find all the wines
     Wine.find({})
@@ -57,7 +58,7 @@ router.get('/', (req, res) => {
 })
 
 // Create route
-// CREATE -> receives a request body, and creates a new document in the database
+// POST -> receives a request body, and creates a new document in the database
 router.post('/', (req, res) => {
     // !req.body.owner = req.session.userId
     // store req.body to a variable
@@ -73,6 +74,25 @@ router.post('/', (req, res) => {
             res.status(404).json(err)
         })
     //! res.send(newFruit) //to essentially console log to postman
+})
+
+// Update route
+// PUT -> replaces the entire document with a new document from the req.body
+router.put('/:id', (req, res) => {
+    // save the id to a variable for easy use later
+    const id = req.params.id
+    // save the request body to a variable for easy reference later
+    const updatedWine = req.body
+    Wine.findByIdAndUpdate(id, updatedWine, { new: true })
+        .then(wine => {
+            console.log('the newly updated wine', wine)
+            // update success message will be a 204 - no content
+            res.sendStatus(204)
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(404).json(err)
+        })
 })
 
 /////////////////////////////////////////////////////
