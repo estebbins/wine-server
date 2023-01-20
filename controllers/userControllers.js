@@ -13,15 +13,15 @@ const router = express.Router()
 /////////////////////////////////////////////////////
 //// Routes                                      ////
 /////////////////////////////////////////////////////
-// !After liquid
+
 // Sign-up route
 // GET -> /users/signup
 // Renders a liquid page with the sign up form
-// router.get('/signup', (req, res) => {
-//     // res.render points to a file
-//     // res.redirect points to a URL
-//     res.render('users/signup')
-// })
+router.get('/signup', (req, res) => {
+    // res.render points to a file
+    // res.redirect points to a URL
+    res.render('users/signup')
+})
 
 // Sign-up route -> /users/signup
 // POST -> creates new users in our db
@@ -40,24 +40,22 @@ router.post('/signup', async (req, res) => {
     // if we're successful, send a 201 status
         .then(user => {
             console.log('new user created', user)
-            res.status(201).json({ username: user.username })
-            // !after liquid
-            // !res.redirect('/users/login')
+            // res.status(201).json({ username: user.username })
+            res.redirect('/users/login')
         })
     // If there's an error, handle the error
         .catch(err => {
             console.log(err)
-            res.json(err)
-            // !after liquid
-            // res.redirect(`/error?error=username%20taken`)
+            // res.json(err)
+            res.redirect(`/error?error=username%20taken`)
         })
 })
-// !after liquid
-// // GET -> /users/login
-// // Renders a liquid
-// router.get('/login', (req, res) => {
-//     res.render('users/login')
-// })
+
+// GET -> /users/login
+// Renders a liquid
+router.get('/login', (req, res) => {
+    res.render('users/login')
+})
 
 // Log in route -> /users/login
 // POST -> this route creates new session
@@ -76,37 +74,32 @@ router.post('/login', async (req, res) => {
                     req.session.username = username
                     req.session.loggedIn = true
                     req.session.userId = user.id
-                    res.status(201).json({ user: user.username })
-                    // ! after liquid
-                    // res.redirect('/')
+                    // res.status(201).json({ user: user.username })
+                    res.redirect('/')
                 } else {
                     // if the passwords don't match, send the user a message
-                    res.json({ error: 'username or password is incorrect' })
-                    // ! after liquid
-                    // res.redirect(`/error?error=username%20or%20password%20is%20incorrect`)
+                    // res.json({ error: 'username or password is incorrect' })
+                    res.redirect(`/error?error=username%20or%20password%20is%20incorrect`)
                 }
             } else {
                 // if the user does not exist, respond with message
-                res.json({ error: 'user does not exist' })
-                // ! after liquid
-                // res.redirect(`/error?error=user%20does%20not%20exist`)
+                // res.json({ error: 'user does not exist' })
+                res.redirect(`/error?error=user%20does%20not%20exist`)
             }
         })
         .catch(err => {
             console.log(err)
             res.json(err)
-            // ! after liqiud
-            // res.redirect(`/error?error=${err}`)
+            res.redirect(`/error?error=${err}`)
         })
 
 })
 
-// !after liquid
-// // GET -> /users/logout
-// // Renders page that allows users to log out
-// router.get('/logout', (req, res) => {
-//     res.render('users/logout')
-// })
+// GET -> /users/logout
+// Renders page that allows users to log out
+router.get('/logout', (req, res) => {
+    res.render('users/logout')
+})
 
 // Log out route -> /users/logout
 // DELETE -> destroys our session in our db(and in the browser)
@@ -116,10 +109,9 @@ router.delete('/logout', (req, res) => {
     req.session.destroy(err => {
         console.log('this is req.session upon logout \n', req.session)
         console.log('error on logout? \n', err)
-        res.sendStatus(204)
-        // !after liquid
+        // res.sendStatus(204)
         // eventually redirect users here, after adding the view error.
-        // res.redirect('/')
+        res.redirect('/')
     })
 })
 

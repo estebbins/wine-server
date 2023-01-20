@@ -11,8 +11,9 @@ const middleware = require('./utils/middleware')
 /////////////////////////////////////////////////////
 //// Create our Express App Object               ////
 /////////////////////////////////////////////////////
-const app = express()
-// ! update to liquid express views
+// const app = express()
+// update to liquid express views
+const app = require('liquid-express-views')(express())
 
 /////////////////////////////////////////////////////
 //// Middleware                                  ////
@@ -26,14 +27,21 @@ middleware(app)
 // GET -> /
 // Home Route -> confirms connection
 app.get('/', (req, res) => {
-    res.send('Server is live, ready for requests')
+    res.render('home.liquid')
+    // res.send('Server is live, ready for requests')
 })
 // Register routes once created
 app.use('/wines', WineRouter)
 app.use('/users', UserRouter)
 app.use('/ratings', RatingRouter)
 
-// ! render catch-all error page
+// render our error page
+app.get('/error', (req, res) => {
+    const error = req.query.error || 'This page does not exist'
+
+    res.render('error.liquid', { error })
+})
+
 
 /////////////////////////////////////////////////////
 //// Server Listener                             ////

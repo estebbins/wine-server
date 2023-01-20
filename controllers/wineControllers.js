@@ -21,9 +21,8 @@ router.get('/', (req, res) => {
         .populate('ratings.author', '-password')
         .then(wines => { 
             // send json if successful
-            res.json({ wines: wines }) 
-            // !after liquid installed
-            // !res.render('fruits/index', { fruits })
+            // res.json({ wines: wines }) 
+            res.render('wines/index', { wines })
         })
         .catch(err => {
             // catch errors if they occur
@@ -55,7 +54,7 @@ router.post('/', (req, res) => {
 router.get('/mine', (req, res) => {
     // find wines by owner, using the req.session info
     Wine.find({ owner: req.session.userId })
-        // !.populate('comments.author', '-password')
+        .populate('comments.author', '-password')
         .then(wines => {
             // if found, display the wine
             res.status(200).json({ wines: wines })
