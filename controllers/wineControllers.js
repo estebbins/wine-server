@@ -41,9 +41,8 @@ router.get('/seed', (req, res) => {
 router.get('/', (req, res) => {
     // find all the wines
     Wine.find({})
-    // ! use populate after owner & comments created
         .populate('owner', '-password')
-        // .populate('comments.author', '-password')
+        // !.populate('comments.author', '-password')
         .then(wines => { 
             // send json if successful
             res.json({ wines: wines }) 
@@ -75,23 +74,45 @@ router.post('/', (req, res) => {
         })
 })
 
-////////////////// Temporary UPDATE route ///////////////////////
-// Update route
-// PUT -> replaces the entire document with a new document from the req.body
-router.put('/:id', (req, res) => {
-    // save the id to a variable for easy use later
-    const id = req.params.id
-    // save the request body to a variable for easy reference later
-    const updatedWine = req.body
-    Wine.findByIdAndUpdate(id, updatedWine, { new: true })
-        .then(wine => {
-            console.log('the newly updated wine', wine)
-            // update success message will be a 204 - no content
-            res.sendStatus(204)
+// Index route -> /mine
+// GET -> this is a user specific index route
+router.get('/mine', (req, res) => {
+    // find wines by owner, using the req.session info
+    Wine.find({ owner: req.session.userId })
+        // !.populate('comments.author', '-password')
+        .then(wines => {
+            // if found, display the wine
+            res.status(200).json({ wines: wines })
         })
         .catch(err => {
+            // otherwise, throw an error
             console.log(err)
-            res.status(404).json(err)
+            res.status(400).json(err)
+        })
+        
+})
+
+// Update route
+// PUT -> updates a specific wine if it belongs to the user
+router.put('/:id', (req, res) => {
+    const id = req.params.id
+    Wine.findById(id)
+        .then(wine => {
+            // if the owner of the fruit is the person who is logged in
+            if (wine.owner == req.session.userId) {
+                // and send success message
+                res.sendStatus(204)
+                // update and save the fruit
+                return wine.updateOne(req.body)
+            } else {
+                // otherwise send a 401 unauthorized status
+                res.sendStatus(401)
+            }            
+        })
+        .catch(err => {
+            // otherwise, throw an error
+            console.log(err)
+            res.status(400).json(err)
         })
 })
 
@@ -104,15 +125,15 @@ router.delete('/:id', (req, res) => {
     Wine.findById(id)
         .then(wine => {
             // if the owner of the fruit is the person who is logged in
-            // if (wine.owner == req.session.userId) {
+            if (wine.owner == req.session.userId) {
                 // and send success message
                 res.sendStatus(204)
                 // delete the fruit
                 return wine.deleteOne()
-            // } else {
+            } else {
                 // otherwise send a 401 unauthorized status
-                // res.sendStatus(401)
-            // }
+                res.sendStatus(401)
+            }
         })
         .catch(err => {
             // otherwise, throw an error
