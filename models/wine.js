@@ -23,18 +23,16 @@ const wineSchema = new Schema ({
     dateTasted: {
         type: Date
     },
-    // !add owner after user model defined
-    // owner: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'User'
-    // },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    },
     // ! subdoc / comments: [commentSchema]
 }, {
     timestamps: true
 })
 
 const Wine = model('Wine', wineSchema)
-
 
 /////////////////////////////////////////////////////
 //// Export model                                ////

@@ -4,6 +4,7 @@
 const express = require('express') // import the express framework
 require('dotenv').config() // Load ENV file's variables
 const WineRouter = require('./controllers/wineControllers')
+const UserRouter = require('./controllers/userControllers')
 // !import subdocument router once created
 const middleware = require('./utils/middleware')
 
@@ -29,7 +30,7 @@ app.get('/', (req, res) => {
 })
 // Register routes once created
 app.use('/wines', WineRouter)
-// !app.use('/users', UserRouter)
+app.use('/users', UserRouter)
 // ! Add subdocument router
 
 // ! render catch-all error page
