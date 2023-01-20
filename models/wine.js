@@ -26,7 +26,7 @@ const wineSchema = new Schema ({
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
+    }
     // ! subdoc / comments: [commentSchema]
 }, {
     timestamps: true

@@ -42,7 +42,7 @@ router.get('/', (req, res) => {
     // find all the wines
     Wine.find({})
     // ! use populate after owner & comments created
-        // .populate('owner', '-password')
+        .populate('owner', '-password')
         // .populate('comments.author', '-password')
         .then(wines => { 
             // send json if successful
@@ -60,7 +60,7 @@ router.get('/', (req, res) => {
 // Create route
 // POST -> receives a request body, and creates a new document in the database
 router.post('/', (req, res) => {
-    // !req.body.owner = req.session.userId
+    req.body.owner = req.session.userId
     // store req.body to a variable
     const newWine = req.body
     Wine.create(newWine)
@@ -73,7 +73,6 @@ router.post('/', (req, res) => {
             console.log(err)
             res.status(404).json(err)
         })
-    //! res.send(newFruit) //to essentially console log to postman
 })
 
 ////////////////// Temporary UPDATE route ///////////////////////
