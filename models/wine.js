@@ -5,10 +5,10 @@
 const mongoose = require('../utils/connection')
 // destructure the schema & model functions from mongoose
 const { Schema, model } = mongoose
-// ! import subdoc const commentSchema = require('./comment')
+const ratingSchema = require('./ratings')
 
 /////////////////////////////////////////////////////
-//// Define fruit schema & create fruit model    ////
+//// Define wine schema & create wine model      ////
 /////////////////////////////////////////////////////
 const wineSchema = new Schema ({
     brand: {
@@ -26,8 +26,8 @@ const wineSchema = new Schema ({
     owner: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    }
-    // ! subdoc / comments: [commentSchema]
+    },
+    ratings: [ratingSchema]
 }, {
     timestamps: true
 })
