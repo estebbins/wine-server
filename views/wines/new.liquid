@@ -1,0 +1,36 @@
+{% layout 'layout.liquid' %}
+{% block content %}
+    <div class="container-sm">
+        <form action="/wines" method="POST">
+            <fieldset>
+                <legend>Create New Wine</legend>
+                <legend>Edit {{ wine.brand }}</legend>
+                <label class="form-label">Brand:</label>
+                <input 
+                    type="text" class="form-control" 
+                    name="brand" placeholder="What brand of wine is it?"
+                    required
+                >
+                <label class="form-label">Varietal:</label>
+                <input 
+                    type="text" class="form-control" 
+                    name="varietal" placeholder="What type of grape isit (varietal)?"
+                    required
+                >
+                <label class="form-label">Color:</label>
+                <input 
+                    type="color" class="form-control" 
+                    name="color" placeholder="What color is the wine?"
+                    required
+                >
+                <label class="form-label">Date Tasted:</label>
+                <input 
+                    type="date" class="form-control" 
+                    name="dateTasted"
+                    required
+                >
+            </fieldset>
+            <input type="submit" class="btn btn-success" value="Create New Wine">
+        </form>
+    </div>
+{% endblock %}
