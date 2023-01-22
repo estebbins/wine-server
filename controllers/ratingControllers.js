@@ -44,7 +44,7 @@ router.post('/:wineId', (req, res) => {
             })
     } else {
         // res.sendStatus(401) // send a 401-unauthorized
-        res.redirect(`/error?error=You%20Are%20not%20allowed%20to%20comment%20on%20this%20wine`)
+        res.redirect(`/error?error=You%20Are%20not%20allowed%20to%20rate%20this%20wine`)
     }
 
 })

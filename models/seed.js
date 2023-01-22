@@ -19,7 +19,7 @@ const Wine = require('./wine')
 //     // delete all other wine in the database
 //     Wine.deleteMany({})
 //         .then(() => {
-//             // then we'll seed(create) our starter fruits
+//             // then we'll seed(create) our starter wines
 //             Wine.create(startWine)
 //                 .then(data => {
 //                     res.json(data)
@@ -47,11 +47,11 @@ db.on('open', () => {
     // this will delete wine that are not owned by any user
     Wine.deleteMany({ owner: null })
         .then(() => {
-            // then we'll seed(create) our starter fruits
+            // then we'll seed(create) our starter winess
             Wine.create(startWines)
             // tell our app what to do with success and failures
                 .then(data => {
-                    console.log('here are the created fruits: \n', data)
+                    console.log('here are the created winess: \n', data)
                     db.close()
                 })
                 .catch(err => {
