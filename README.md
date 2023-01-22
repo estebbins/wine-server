@@ -1,116 +1,89 @@
-# Single-Resource-API-deliverable
-Build a simple API that receives requests and sends JSON as a response
+# Fruitcakes full CRUD Full stack app
+
+- Use express to build a server
+- Use mongoose to communicate with mongodb
+- Full crud functionality on our wines resource
+- User authentication
+- The ability to add ratings to wine
+
+This app will start as an API, that will render HTML in our browser. 
+
+This is an MVC application. 
+MVC: 
+- Models - all of our data, what shape it's in and what resources we'r using(models), and how our resources relate to one another
+- Views - all the different ways we can see our data, whether it's a JSON response, or an actual HTML response, this determines how our data can be viewed by the user
+- Controllers - tell us what we can do and connect our views and our models. We can think of our routes as our controllers, because they determine how a user can interact with our resources.
+
+## How we talk about what we're doing
+We're using express framework to build a server in which we are using mongoose to process our requeests and run CRUD operations using a mongoDb database
+
+What we're building is a REST api, that runs full CRUD operations on a single resource.
+
+## What is REST?
+- REST:
+    - REpresentational 
+    - State
+    - Transfer
+- It's just a set of principles that describe how networked resources are accessed & manipulated
+- We have 7 RESTful routes that allow us basic operations for reading and manipulating a collection of data
+
+## Route tables for documents
+#### wines
+
+| **URL**              | **HTTP Verb** |**Actions**|
+|----------------------|---------------|-----------|
+| /wines/             | GET           | index
+| /wines/:id          | GET           | show
+| /wines/new          | GET           | new
+| /wines              | POST          | create
+| /wines/:id/edit     | GET           | edit
+| /wines/:id          | PATCH/PUT     | update
+| /wines/:id          | DELETE        | destroy   |
+
+#### ratings
+
+| **URL**              | **HTTP Verb** |**Actions**|
+|----------------------------------------|---------------|-----------|
+| /ratings/:wineId                     | POST          | create
+| /ratings/delete/:wineID/:ratingId   | DELETE        | destroy   |
 
 
-#### Learning Objectives
+#### Users
 
-- Full CRUD API for a single resource
-
-#### Prerequisites
-
-- JavaScript
-- Node / Express
-
-## Getting Started
-
-Choose a resource that it will be easy for you to make a simple model out of, no need to get fancy or pick anything crazy. Prior developers have chosen, dogs, cats, cars, X-men, food, etc. It just needs to be something you can make a model out of with a couple of properties. (Think back to the fruits app)
-
-The only models you're not allowed to choose are Pets, Books, or Fruits(because we've already done those.)
-
-There are a few requirements to keep in mind:
-
-### MVP (Minimum Viable Product)
-
-Your app should:
-
-    - have one model with at least three properties
-    - models properties must use more than one data type(String, Number, Boolean, Date etc.)
-    - have a controller allowing for full CRUD functionality.
-      - This includes the following routes
-      - index route to view all instances of the resource
-      - show route to view one single instance of the resource
-      - post route to create an instance of the resource
-      - patch route to update one instance of the resource
-      - delete route to destroy one instance of the resource
-    - You must send the response as JSON(this will come into play later) as well as with an appropriate status code
-
-### Setting up
-
-1. create a new repo for this on your personal github, name it after your chosen resource, for example, if your resource is a donut, you could call it 'donut-API' or 'donut-server'
-
-2. Set up your boilerplate Express server. You can either look back at our [Intro to Express](https://git.generalassemb.ly/sei-ec-remote/intro-to-node-npm-express#set-up-a-basic-express-server) lesson or use the [Express docs](https://expressjs.com/en/starter/installing.html)
-
-3. Follow the best practices described in class, and test your routes with postman.
-
-### Routes
-
-Your app should use RESTful routes:
-
-- Index
-  - GET `/<resource_name>`<br>
-- Show
-  - GET `/<resource_name>/:id`<br>
-- Create
-  - POST `/<resource_name>`<br>
-- Update
-  - PUT `/<resource_name>/:id`<br>
-- Destroy
-  - DELETE `/<resource_name>/:id`<br>
+| **URL**              | **HTTP Verb** |**Actions**|
+|----------------------|---------------|-----------|
+| /users/signup        | GET           | new    
+| /users/signup        | POST          | create    
+| /users/signup        | GET           | login   
+| /users/login         | POST          | create
+| /users/logout        | DELETE        | destroy   |
 
 
-## Commits
 
-The order of your commits this time does not matter, but refer back to the MVP to make sure that you're meeting all of the requirements. Make your commits **as you complete the work**, not all at once in the end! Some sample commits can be found below.
+## File organization, where are things happening?
 
-<details><summary><strong>Sample commits</strong>:</summary>
+Main entry file is still server.js
+This is where we establish our connection with express, to the port 3000, which allows us to develop locally, on [localhost:3000](http://localhost:3000/)
 
-<hr>
-** Commit your work.** <br>
-"Server is running and connected to the database"
-<hr>
+`server.js` imports our `wineControllers` from the controllers directory, 
 
-<hr>
-** Commit your work.** <br>
-"Sends all <resource_name> documents via index route".
-<hr>
+`wineControllers` is where we set up our routes to utilize mongoose to interact with wine documents in our mongoDb.
 
-<hr>
-** Commit your work.** <br>
-"Sends one <resource_name> document via show route".
-<hr>
+The connection between wines and mongoDb, starts with the file `utils/connection.js`, where we define and connect to our database. The wine model in `models/wine.js` is where this connection happens. Our wineControllers import the model wine, and run mongoose model methods whenever we hit the appropriate route.
 
-<hr>
-** Commit your work.** <br>
-"Can successfully create a <resource_name>".
-<hr>
+## Middleware
 
-<hr>
-** Commit your work.** <br>
-"Has the ability to edit existing <resource_name>".
-<hr>
+Middleware is processed by a function in the utils directory, `utils/middleware.js`. This middleware function takes one argument, app, and processes requests through our middleware.
 
-<hr>
-** Commit your work.** <br>
-"Has the ability to delete <resource_name>".
-<hr>
+## Relationships
+One to many:
+    - One user can have many wines
+    - One wine can have many ratings
 
-<hr>
-** Commit your work.** <br>
-"The app uses RESTful routing, all seven RESTful routes".
-<hr>
+wines are connected to Users through the `wine.owner` field, via `objectId` reference
+ratings are connected to wines, as an array of subdocuments at `wine.ratings`
+Users are connected to ratings via `objectId` reference, at `rating.author`
 
-</details>
+This is an entity relationship diagram (basic version for now). This accurately described my relationships between my documents (entities). 
 
-## Deliverables
-
-- A single resource API app that meets all the MVP requirements outlined at the beginning of this markdown.
-
-## Technical Requirements
-
-- Your app MUST run without syntax errors. If there are errors you can't solve, comment them out and leave a comment above explaining what is wrong
-
-## Submission Guidelines
-
-- Submit your homework via a link to your repo in the appropriate thread on slack.
-
----
+![entityRelationshipDiagram](images/image.png)
