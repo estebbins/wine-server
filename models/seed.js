@@ -41,7 +41,7 @@ db.on('open', () => {
         { brand: 'Josh', varietal: 'pinot grigio', color: 'white', dateTasted: '2022-12-31'},
         { brand: 'Random Unexpected Wine', varietal: 'blend', color: 'red', dateTasted: '2022-12-30'},
         { brand: 'Petit Petit', varietal: 'Petite Sirah', color: 'red', dateTasted: '2022-12-29'},
-        { brand: 'Jansz Tasmania', varietal: 'Pinot Noir & Chardonnay', color: 'rose', dateTasted: '2023-1-19'}
+        { brand: 'Jansz Tasmania', varietal: 'Pinot Noir & Chardonnay', color: 'pink', dateTasted: '2023-1-19'}
     ]
     // then we delete every wine in the database (all instances of this resource)
     // this will delete wine that are not owned by any user

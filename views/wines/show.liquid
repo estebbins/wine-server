@@ -11,7 +11,7 @@
                         Not tasted! Could be poison!
                     {% endif %}
                 </h4>
-                <h4>The color of the fruit is: </h4>
+                <h4>The color of the wine is: </h4>
                 <div class="colorBox" style="background-color: {{ wine.color }}"></div>
                 {% if wine.owner == userId %}
                     <hr>
@@ -20,7 +20,7 @@
                         first button will take us to the edit page
                         second will actually be a form, that calls our delete route
                         {%- endcomment -%}
-                        <a href="/wines/edit/{{ wine.id }}" class="btn btn-primary">Edit {{ wine.brand }}</a>
+                        <a href="/wines/edit/{{ wine.id }}" class="btn btn-primary me-3">Edit {{ wine.brand }}</a>
                         <form action="/wines/{{ wine.id }}?_method=DELETE" method="POST">
                             <input type="submit" class="btn btn-danger" value="Delete {{ wine.brand }}">
                         </form>
@@ -29,15 +29,19 @@
             </article>
         </div>
         <hr>
-        <h4>comments</h4>
+        <h4>ratings</h4>
         <hr>
         {% if loggedIn %}
             <div class="col-md-6">
-                <form action="/comments/{{ wine.id }}" method="POST">
+                <form action="/ratings/{{ wine.id }}" method="POST">
                     <fieldset>
                         <legend>Add Rating</legend>
-                        <label class="form-check-label">rating: </label>
-                        <input type="radio" name="rating" class="form-check-input mb-1">
+                        <label class="form-label">rating:</label>
+                        <input 
+                        type="text" class="form-control" 
+                        name="rating" placeholder="Rate this wine of a scale of 1-5"
+                        required
+                        >
                     </fieldset>
                     <input type="submit" class="btn btn-success" value="add rating">
                 </form>

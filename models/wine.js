@@ -29,7 +29,25 @@ const wineSchema = new Schema ({
     },
     ratings: [ratingSchema]
 }, {
-    timestamps: true
+    timestamps: true, 
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
+})
+
+// Virtual
+wineSchema.virtual('avgRating').get(function () {
+    let average
+    if (this.ratings.length > 0) {
+        let total = 0
+        let count = this.ratings.length
+        this.ratings.forEach(rate => {
+            total += rate.rating
+        })
+        average = total/count
+    } else {
+        average = 0
+    }     
+    return average.toFixed(1)
 })
 
 const Wine = model('Wine', wineSchema)

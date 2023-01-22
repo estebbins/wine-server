@@ -2,7 +2,6 @@
 //// Import Dependencies                         ////
 /////////////////////////////////////////////////////
 const express = require('express')
-const { rawListeners } = require('../models/ratings')
 const Wine = require('../models/wine')
 
 /////////////////////////////////////////////////////
@@ -34,9 +33,9 @@ router.get('/', (req, res) => {
 })
 
 // GET for the new page
-// Shoes a form where a user can create a new wine
+// Shows a form where a user can create a new wine
 router.get('/new', (req, res) => {
-    res.render('wines/new', { ...req.session})
+    res.render('wines/new', { ...req.session })
 })
 
 // Create route
@@ -44,13 +43,13 @@ router.get('/new', (req, res) => {
 router.post('/', (req, res) => {
     req.body.owner = req.session.userId
     // store req.body to a variablew
-    // Ternary statememt to change the on value to send as true
     const newWine = req.body
+    console.log('this is the req body', newWine)
     Wine.create(newWine)
         // send 201 & json of wine
         .then(wine => {
             // res.status(201).json({ wine: wine.toObject() })
-            res.redirect(`/wines/${wines.id}`)
+            res.redirect(`/wines/${wine.id}`)
         })
         // send and error if one occurs
         .catch(err => {
@@ -86,7 +85,7 @@ router.get('/mine', (req, res) => {
 // This will only show the logged in user's wines
 router.get('/json', (req, res) => {
     // Find wines by ownership using req.session info
-    Wines.find({ owner: req.session.userId})
+    Wine.find({ owner: req.session.userId})
         .populate('owner', 'username')
         .populate('ratings.author', '-password')
         .then(wines=> {
@@ -103,8 +102,8 @@ router.get('/json', (req, res) => {
 router.get('/edit/:id', (req, res) => {
     // access wines initial values
     const wineId = req.params.id
-    Wines.findById(wineId)
-        .then(wines=> {
+    Wine.findById(wineId)
+        .then(wine=> {
             res.render('wines/edit', { wine, ...req.session })
         })
         .catch(err => {
@@ -125,7 +124,7 @@ router.put('/:id', (req, res) => {
             // if the owner of the wine is the person who is logged in
             if (wine.owner == req.session.userId) {
                 // and send success message
-                res.sendStatus(204)
+                // res.sendStatus(204)
                 // update and save the wine
                 return wine.updateOne(req.body)
             } else {
@@ -155,14 +154,18 @@ router.delete('/:id', (req, res) => {
             // if the owner of the wine is the person who is logged in
             if (wine.owner == req.session.userId) {
                 // and send success message
-                res.sendStatus(204)
+                // res.sendStatus(204)
                 // delete the wine
+                console.log(wine)
                 return wine.deleteOne()
             } else {
                 // otherwise send a 401 unauthorized status
                 // res.sendStatus(401)
                 res.redirect(`/error?error=You%20Are%20not%20allowed%20to%20delete%20this%20wine`)
             }
+        })
+        .then(() => {
+            res.redirect(`/wines/mine`)
         })
         .catch(err => {
             // otherwise, throw an error

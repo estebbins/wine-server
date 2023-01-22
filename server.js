@@ -27,7 +27,7 @@ middleware(app)
 // GET -> /
 // Home Route -> confirms connection
 app.get('/', (req, res) => {
-    res.render('home.liquid')
+    res.render('home.liquid', { ...req.session })
     // res.send('Server is live, ready for requests')
 })
 // Register routes once created
@@ -39,7 +39,7 @@ app.use('/ratings', RatingRouter)
 app.get('/error', (req, res) => {
     const error = req.query.error || 'This page does not exist'
 
-    res.render('error.liquid', { error })
+    res.render('error.liquid', { error, ...req.session })
 })
 
 

@@ -4,15 +4,36 @@
     <!-- first, if we have wines in our array -->
     <!-- second, if there are no wines in the array -->
     {% if wines.length > 0 %}
-        <h2>All Wines</h2>
-        <ul>
-            <!-- now we can loop over our array of wines -->
-            <!-- and produce some html for every wine that we have -->
-            {% for wine in wines %}
-                <li>{{ wine.brand }}</li>
-            {% endfor %}
-        </ul>
+        <div class="container-md">
+            <h2>All Wines</h2>
+            <div class="row">
+                {% for wine in wines %}
+                    <div class="card me-3 mb-3" style="width: 18rem;">
+                        <h5 class="card-header text-danger">{{ wine.brand }}</h5>
+                        <div class="card-body text-danger">
+                            <h5 class="card-title">
+                                {% if wine.dateTasted %}
+                                    This wine has been tasted for quality assurance purposes
+                                {% else %}
+                                    Not tasted! Could be poison!
+                                {% endif %}
+                            </h5>
+                            {% if wine.ratings.length > 0 %}
+                            <p class="card-text text-danger">Avg rating: {{ wine.avgRating }}/5</p>
+                            {% else %}
+                                <small>no ratings yet...</small>
+                            {% endif %}
+                            <p class="card-text text-danger">The color of this {{ wine.brand }} wine is: </p>
+                            <div class="colorBox mb-2" style="background-color: {{wine.color}};"></div>
+                            <a href="/wines/{{ wine.id }}" class="btn btn-info">View {{ wine.brand }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     {% else %}
-        <h2>No wines yet... Go create some!</h2>
+        <div class="container-md">
+            <h2>No wine yet... Go drinking!</h2>
+        </div>
     {% endif %}
 {% endblock %}
