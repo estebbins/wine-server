@@ -2,6 +2,7 @@
 //// Import Dependencies                         ////
 /////////////////////////////////////////////////////
 const express = require('express')
+const { rawListeners } = require('../models/ratings')
 const Wine = require('../models/wine')
 
 /////////////////////////////////////////////////////
@@ -22,30 +23,40 @@ router.get('/', (req, res) => {
         .then(wines => { 
             // send json if successful
             // res.json({ wines: wines }) 
-            res.render('wines/index', { wines })
+            res.render('wines/index', { wines, ...req.session })
         })
         .catch(err => {
             // catch errors if they occur
             console.log(err)
-            res.status(404).json(err)
+            // res.status(404).json(err)
+            res.redirect(`/error?error=${err}`)
         })
+})
+
+// GET for the new page
+// Shoes a form where a user can create a new wine
+router.get('/new', (req, res) => {
+    res.render('wines/new', { ...req.session})
 })
 
 // Create route
 // POST -> receives a request body, and creates a new document in the database
 router.post('/', (req, res) => {
     req.body.owner = req.session.userId
-    // store req.body to a variable
+    // store req.body to a variablew
+    // Ternary statememt to change the on value to send as true
     const newWine = req.body
     Wine.create(newWine)
         // send 201 & json of wine
         .then(wine => {
-            res.status(201).json({ wine: wine.toObject() })
+            // res.status(201).json({ wine: wine.toObject() })
+            res.redirect(`/wines/${wines.id}`)
         })
         // send and error if one occurs
         .catch(err => {
             console.log(err)
-            res.status(404).json(err)
+            // res.status(404).json(err)
+            res.redirect(`/error?error=${err}`)
         })
 })
 
@@ -54,18 +65,56 @@ router.post('/', (req, res) => {
 router.get('/mine', (req, res) => {
     // find wines by owner, using the req.session info
     Wine.find({ owner: req.session.userId })
-        .populate('comments.author', '-password')
+        .populate('owner', 'username')
+        .populate('ratings.author', '-password')
         .then(wines => {
             // if found, display the wine
-            res.status(200).json({ wines: wines })
+            // res.status(200).json({ wines: wines })
+            res.render('wines/index', { wines, ...req.session })
         })
         .catch(err => {
             // otherwise, throw an error
             console.log(err)
-            res.status(400).json(err)
+            // res.status(400).json(err)
+            res.redirect(`/error?error=${err}`)
         })
         
 })
+
+// GET Route for getting json for specific user wines
+// Index -> this is a user specific index route
+// This will only show the logged in user's wines
+router.get('/json', (req, res) => {
+    // Find wines by ownership using req.session info
+    Wines.find({ owner: req.session.userId})
+        .populate('owner', 'username')
+        .populate('ratings.author', '-password')
+        .then(wines=> {
+            res.status(200).json({ wines: wines })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json(err)
+        })
+})
+
+// GET request - Edit route
+// Shows form for updating wine
+router.get('/edit/:id', (req, res) => {
+    // access wines initial values
+    const wineId = req.params.id
+    Wines.findById(wineId)
+        .then(wines=> {
+            res.render('wines/edit', { wine, ...req.session })
+        })
+        .catch(err => {
+            // otherwise, throw an error
+            console.log(err)
+            // res.status(400).json(err)
+            res.redirect(`/error?error=${err}`)
+        })
+})
+
 
 // Update route
 // PUT -> updates a specific wine if it belongs to the user
@@ -73,21 +122,25 @@ router.put('/:id', (req, res) => {
     const id = req.params.id
     Wine.findById(id)
         .then(wine => {
-            // if the owner of the fruit is the person who is logged in
+            // if the owner of the wine is the person who is logged in
             if (wine.owner == req.session.userId) {
                 // and send success message
                 res.sendStatus(204)
-                // update and save the fruit
+                // update and save the wine
                 return wine.updateOne(req.body)
             } else {
                 // otherwise send a 401 unauthorized status
-                res.sendStatus(401)
+                res.redirect(`/error?error=You%20Are%20not%20allowed%20to%20edit%20this%20wine`)
             }            
+        })
+        .then(() => {
+            res.redirect('/wines/mine')
         })
         .catch(err => {
             // otherwise, throw an error
             console.log(err)
-            res.status(400).json(err)
+            // res.status(400).json(err)
+            res.redirect(`/error?error=${err}`)
         })
 })
 
@@ -99,21 +152,23 @@ router.delete('/:id', (req, res) => {
     // Find and delete wine
     Wine.findById(id)
         .then(wine => {
-            // if the owner of the fruit is the person who is logged in
+            // if the owner of the wine is the person who is logged in
             if (wine.owner == req.session.userId) {
                 // and send success message
                 res.sendStatus(204)
-                // delete the fruit
+                // delete the wine
                 return wine.deleteOne()
             } else {
                 // otherwise send a 401 unauthorized status
-                res.sendStatus(401)
+                // res.sendStatus(401)
+                res.redirect(`/error?error=You%20Are%20not%20allowed%20to%20delete%20this%20wine`)
             }
         })
         .catch(err => {
             // otherwise, throw an error
             console.log(err)
-            res.status(400).json(err)
+            // res.status(400).json(err)
+            res.redirect(`/error?error=${err}`)
         })
 })
 
@@ -124,14 +179,18 @@ router.get('/:id', (req, res) => {
     const id = req.params.id
     // use a mongoose method to find using that Id
     Wine.findById(id)
+        .populate('ratings.author', 'username')
         .then(wine => {
             // send the wine as json upon success
-            res.json({ wine: wine })
+            // res.json({ wine: wine })
+            res.render('wines/show.liquid', { wine, ...req.session})
         })
         // catch any errors
         .catch(err => {
+            // otherwise, throw an error
             console.log(err)
-            res.status(404).json(err)
+            // res.status(400).json(err)
+            res.redirect(`/error?error=${err}`)
         })
 })
 
