@@ -6,13 +6,13 @@
     {% if wines.length > 0 %}
         <h2>All Wines</h2>
         <ul>
-            <!-- now we can loop over our array of fruits -->
-            <!-- and produce some html for every fruit that we have -->
+            <!-- now we can loop over our array of wines -->
+            <!-- and produce some html for every wine that we have -->
             {% for wine in wines %}
-                <li>{{ wine.name }}</li>
+                <li>{{ wine.brand }}</li>
             {% endfor %}
         </ul>
     {% else %}
-        <h2>No fruits yet... Go create some!</h2>
+        <h2>No wines yet... Go create some!</h2>
     {% endif %}
 {% endblock %}
