@@ -1,0 +1,61 @@
+{% layout 'layout.liquid' %}
+{% block content %}
+    <div class="container-md">
+        <div class="row justify-content-between">
+            <article class="col-5">
+                <h2>{{ wine.brand }}</h2>
+                <h4>
+                    {% if wine.dateTasted %}
+                        This wine has been tasted for quality assurance purposes
+                    {% else %}
+                        Not tasted! Could be poison!
+                    {% endif %}
+                </h4>
+                <h4>The color of the fruit is: </h4>
+                <div class="colorBox" style="background-color: {{ wine.color }}"></div>
+                {% if wine.owner == userId %}
+                    <hr>
+                    <div class="btn-group">
+                        {%- comment -%}
+                        first button will take us to the edit page
+                        second will actually be a form, that calls our delete route
+                        {%- endcomment -%}
+                        <a href="/wines/edit/{{ wine.id }}" class="btn btn-primary">Edit {{ wine.brand }}</a>
+                        <form action="/wines/{{ wine.id }}?_method=DELETE" method="POST">
+                            <input type="submit" class="btn btn-danger" value="Delete {{ wine.brand }}">
+                        </form>
+                    </div>
+                {% endif %}
+            </article>
+        </div>
+        <hr>
+        <h4>comments</h4>
+        <hr>
+        {% if loggedIn %}
+            <div class="col-md-6">
+                <form action="/comments/{{ wine.id }}" method="POST">
+                    <fieldset>
+                        <legend>Add Rating</legend>
+                        <label class="form-check-label">rating: </label>
+                        <input type="radio" name="rating" class="form-check-input mb-1">
+                    </fieldset>
+                    <input type="submit" class="btn btn-success" value="add rating">
+                </form>
+            </div>
+        {% else %}
+            <div class="col-md-6">
+                <small>If you'd like to leave a rating, please log in...</small>
+            </div>
+        {% endif %}
+        <hr>
+        {% if wine.ratings.length > 0 %}
+            <div class="container-sm justify-content-center">
+                {% for rating in wine.ratings %}
+                    {% render '../rating.liquid', rating: rating, userId: userId, wine: wine %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <small>no ratings yet...</small>
+        {% endif %}
+    </div>
+{% endblock %}
