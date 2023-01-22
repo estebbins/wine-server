@@ -39,7 +39,7 @@ router.post('/signup', async (req, res) => {
     User.create(newUser)
     // if we're successful, send a 201 status
         .then(user => {
-            console.log('new user created', user)
+            // console.log('new user created', user)
             // res.status(201).json({ username: user.username })
             res.redirect('/users/login')
         })
@@ -89,7 +89,7 @@ router.post('/login', async (req, res) => {
         })
         .catch(err => {
             console.log(err)
-            res.json(err)
+            // res.json(err)
             res.redirect(`/error?error=${err}`)
         })
 
